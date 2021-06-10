@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// [START analyticsdata_run_pivot_report_js]
-// [START analyticsdata_run_pivot_report_js_initialize]
+// [START analyticsdata_pivot_demo]
+// [START analyticsdata_pivot_demo_initialize]
 /**
  * TODO(developer): Replace this variable with your
  *   Google Analytics 4 property ID before running the sample.
@@ -53,7 +53,7 @@ function initClient() {
       discoveryDocs: discoveryDocs,
       clientId: clientId,
       scope: scopes
-  }).then(function () {
+  }).then( () => {
     // Listen for sign-in state changes.
     gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
@@ -62,6 +62,11 @@ function initClient() {
 
     authorizeButton.onclick = handleAuthClick;
     signoutButton.onclick = handleSignoutClick;
+  }).catch((error) => {
+    // Display the error on the page.
+    const errorOutput = document.getElementById('error');
+    const textNode = document.createTextNode(JSON.stringify(error, null, 2));
+    errorOutput.appendChild(textNode);
   });
 }
 
@@ -83,76 +88,78 @@ function handleAuthClick(event) {
 function handleSignoutClick(event) {
   gapi.auth2.getAuthInstance().signOut();
 }
-// [END analyticsdata_run_pivot_report_js_initialize]
+// [END analyticsdata_pivot_demo_initialize]
 
-// [START analyticsdata_run_pivot_report_js_make_api_call]
+// [START analyticsdata_pivot_demo_make_api_call]
 
 // Load the API and make an API call.  Display the results on the screen.
 function makeApiCall() {
   // Make a call to the Google Analytics Data API v1. This call builds a pivot
-  // report with "country", "language" and "browser" pivots, displaying the
+  // report with 'country', 'language' and 'browser' pivots, displaying the
   // number of sessions for each dimension combination. Adjust the date range
   // as necessary.
   //
   // See https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runPivotReport
   //   for more information on pivot report request structure.
-  // [START analyticsdata_run_pivot_report_js_make_api_call_request]
-  gapi.client.analyticsdata.properties.runPivotReport({
-     'property': 'properties/' + propertyId,
-     "dateRanges": [
-          {
-            "startDate": "2021-01-01",
-            "endDate": "2021-01-30"
-          }
+  // [START analyticsdata_pivot_demo_make_api_call_request]
+  const pivotReportQuery = {
+    'property': 'properties/' + propertyId,
+    'dateRanges': [
+      {
+        'startDate': '14daysAgo',
+        'endDate': 'yesterday'
+      }
+    ],
+    'pivots': [
+      {
+        'fieldNames': [
+          'country'
         ],
-        "pivots": [
+        'limit': 250,
+        'orderBys': [
           {
-            "fieldNames": [
-              "country"
-            ],
-            "limit": 250,
-            "orderBys": [
-              {
-                "dimension": {
-                  "dimensionName": "country"
-                }
-              }
-            ]
-          },
-          {
-            "fieldNames": [
-              "language"
-            ],
-            "limit": 3,
-
-          },
-          {
-            "fieldNames": [
-              "browser"
-            ],
-            "limit": 5,
-          }
-        ],
-        "metrics": [
-          {
-            "name": "sessions"
-          }
-        ],
-        "dimensions": [
-          {
-            "name": "country"
-          },
-          {
-            "name": "language"
-          },
-          {
-            "name": "browser"
+            'dimension': {
+              'dimensionName': 'country'
+            }
           }
         ]
-  }).then(function(response) {
-    // [END analyticsdata_run_pivot_report_js_make_api_call_request]
+      },
+      {
+        'fieldNames': [
+          'language'
+        ],
+        'limit': 3,
 
-    // [START analyticsdata_run_pivot_report_js_make_api_call_draw_headers]
+      },
+      {
+        'fieldNames': [
+          'browser'
+        ],
+        'limit': 5,
+      }
+    ],
+    'metrics': [
+      {
+        'name': 'sessions'
+      }
+    ],
+    'dimensions': [
+      {
+        'name': 'country'
+      },
+      {
+        'name': 'language'
+      },
+      {
+        'name': 'browser'
+      }
+    ]
+  };
+  gapi.client.analyticsdata.properties.runPivotReport(pivotReportQuery).then(
+      (response) => {
+    // [END analyticsdata_pivot_demo_make_api_call_request]
+
+    // [START analyticsdata_pivot_demo_make_api_call_draw_headers]
 
     // ----------------------------------------------------------------
     // Draw the horizontal pivot table headers.
@@ -165,46 +172,46 @@ function makeApiCall() {
     const languagePivotDimensionHeaders = response.result.pivotHeaders[1].pivotDimensionHeaders;
     const browserPivotDimensionHeaders = response.result.pivotHeaders[2].pivotDimensionHeaders;
 
-    // Insert a row for the "browser" pivot header.
+    // Insert a row for the 'browser' pivot header.
     const browserPivotRow = resultTable.insertRow(0);
-    // Insert a row for the "language" pivot header.
+    // Insert a row for the 'language' pivot header.
     const languagePivotRow = resultTable.insertRow(0);
 
     // Insert an empty cell for each horizontal header row.
     browserPivotRow.insertCell(0);
     languagePivotRow.insertCell(0);
 
-    // Draw horizontal headers for "language" and "browser" pivots.
+    // Draw horizontal headers for 'language' and 'browser' pivots.
     for(const languagePivotDimensionHeader of languagePivotDimensionHeaders)
     {
-      // Append a cell to the "language" header row.
+      // Append a cell to the 'language' header row.
       const newCell = languagePivotRow.insertCell(-1);
 
-      // Each "language" pivot header cell spans multiple cells determined by
-      // the "browser" pivot size.
+      // Each 'language' pivot header cell spans multiple cells determined by
+      // the 'browser' pivot size.
       newCell.colSpan = browserPivotDimensionHeaders.length;
 
-      // Populate a "language" pivot header cell.
+      // Populate a 'language' pivot header cell.
       const value =  languagePivotDimensionHeader.dimensionValues[0].value;
       const textNode = document.createTextNode(value);
       newCell.appendChild(textNode);
 
-      // For every cell of the "language" pivot header, multiple "browser" pivot
+      // For every cell of the 'language' pivot header, multiple 'browser' pivot
       // header cells must be created.
       for(const browserPivotDimensionHeader of browserPivotDimensionHeaders)
       {
-        // Append a cell to the "browser" header row.
+        // Append a cell to the 'browser' header row.
         const newCell = browserPivotRow.insertCell(-1);
 
-        // Populate a "browser" pivot header cell.
+        // Populate a 'browser' pivot header cell.
         const value =  browserPivotDimensionHeader.dimensionValues[0].value;
         const textNode = document.createTextNode(value);
         newCell.appendChild(textNode);
       }
     }
-    // [END analyticsdata_run_pivot_report_js_make_api_call_draw_headers]
+    // [END analyticsdata_pivot_demo_make_api_call_draw_headers]
 
-    // [START analyticsdata_run_pivot_report_js_make_api_call_create_grid]
+    // [START analyticsdata_pivot_demo_make_api_call_create_grid]
 
     // ----------------------------------------------------------------
     // Draw the vertical pivot table header and create the placeholder
@@ -228,13 +235,13 @@ function makeApiCall() {
       // Insert a cell in the row at index 0.
       const newCell = newRow.insertCell(0);
 
-      // Populate the first cell of the row with a "country" pivot dimension
+      // Populate the first cell of the row with a 'country' pivot dimension
       // value.
       const value = countryPivotDimensionHeader.dimensionValues[0].value;
       const textNode = document.createTextNode(value);
       newCell.appendChild(textNode);
 
-      // Create empty placeholder cells of the result table.
+      // Create blank placeholder cells of the result table.
       for(const languagePivotDimensionHeader of languagePivotDimensionHeaders)
       {
         for(const browserPivotDimensionHeader of browserPivotDimensionHeaders)
@@ -248,19 +255,19 @@ function makeApiCall() {
             languageDimensionValue,
             browserDimensionValue];
 
-          // Add an empty placeholder cell to the grid. This cell will be
+          // Add a blank placeholder cell to the grid. This cell will be
           // populated with a metrics value later.
-          const newCell = newRow.insertCell()
+          const blankCell = newRow.insertCell()
 
           // Remember the reference to the cell by its key. This mapping will
           // be used to populate the table with metric values in the next step.
-          gridMapping[cellKey] = newCell;
+          gridMapping[cellKey] = blankCell;
         }
       }
     }
-    // [END analyticsdata_run_pivot_report_js_make_api_call_create_grid]
+    // [END analyticsdata_pivot_demo_make_api_call_create_grid]
 
-    // [START analyticsdata_run_pivot_report_js_make_api_call_populate_metrics]
+    // [START analyticsdata_pivot_demo_make_api_call_populate_metrics]
     // ----------------------------------------------------------------
     // Populate the result table with metric values.
     // ----------------------------------------------------------------
@@ -286,9 +293,20 @@ function makeApiCall() {
       const textNode = document.createTextNode(metricValue);
       gridMapping[cellKey].appendChild(textNode);
     }
-    // [END analyticsdata_run_pivot_report_js_make_api_call_populate_metrics]
+    // [END analyticsdata_pivot_demo_make_api_call_populate_metrics]
+  }).catch((error) => {
+    // Display the error on the page.
+    const errorOutput = document.getElementById('error');
+    const textNode = document.createTextNode(JSON.stringify(error,null, 2));
+    errorOutput.appendChild(textNode);
   });
+
+  // Display the report query on the page for debug purposes.
+  const debugOutput = document.getElementById('query');
+  const textNode = document.createTextNode('Pivot report query:\n' +
+      JSON.stringify(pivotReportQuery, null, 2));
+  debugOutput.appendChild(textNode);
 }
 
-// [END analyticsdata_run_pivot_report_js_make_api_call]
-// [END analyticsdata_run_pivot_report_js]
+// [END analyticsdata_pivot_demo_make_api_call]
+// [END analyticsdata_pivot_demo]
