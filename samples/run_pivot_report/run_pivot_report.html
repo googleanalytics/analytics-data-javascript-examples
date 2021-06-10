@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Analytics Data API v1 Pivot Report Demo</title>
+  <meta charset='utf-8' />
+  <link href='//fonts.googleapis.com/css?family=Open+Sans:600,400,300' rel='stylesheet'>
+  <link rel="stylesheet" type="text/css"
+        href="pretty.css">
+</head>
+<body>
+<p>Google Analytics Data API v1 Pivot Report Demo.</p>
+
+<p>Click "Authorize" button to start the OAuth2 flow and run the query. Make sure to edit
+  the <b>run_pivot_report.js</b> file and replace <b>propertyId</b>, <b>clientId</b> variables with
+  the values for your Google Analytics 4 property id and OAuth2 client id.</p>
+
+<button id="authorize-button" style="display: none;">Authorize</button>
+<button id="signout-button" style="display: none;">Sign Out</button>
+
+<div id="content">
+  <table id="result"  border="1" cellpadding="2">
+  </table>
+</div>
+
+<script src="run_pivot_report.js"></script>
+<script async defer src="https://apis.google.com/js/api.js"
+        onload="this.onload=function(){};handleClientLoad()"
+        onreadystatechange="if (this.readyState === 'complete') this.onload()">
+</script>
+</body>
+</html>
