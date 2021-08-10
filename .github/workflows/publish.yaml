@@ -1,0 +1,17 @@
+name: Push commit
+on: push
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create report file
+      run: date +%s > report.txt
+    - name: Commit
+      run: |
+        git checkout gh-pages-test
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git commit -m "generated"
+        git push
