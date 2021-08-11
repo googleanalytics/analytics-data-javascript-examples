@@ -9,11 +9,16 @@
 </head>
 <body>
 <p>Google Analytics Data API v1 Pivot Report Demo.</p>
-
+<p>See the <a href="https://developers.google.com/analytics/devguides/reporting/data/v1/pivots">Pivot
+  Reporting Guide</a> on the Google Analytics Data API developer site to learn more about pivot
+  reports.</p>
 <p>Click "Authorize" button to start the OAuth2 flow and run the query. Make sure to edit
   the <b>run_pivot_report.js</b> file and replace <b>propertyId</b>, <b>clientId</b> variables with
   the values for your Google Analytics 4 property id and OAuth2 client id.</p>
 
+<p>Client ID</p> <input id="client-id">
+
+<p>Google Analytics 4 Property ID</p> <input id="property-id">
 <button id="authorize-button" style="display: none;">Authorize</button>
 <button id="signout-button" style="display: none;">Sign Out</button>
 

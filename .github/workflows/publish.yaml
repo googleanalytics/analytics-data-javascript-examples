@@ -1,0 +1,34 @@
+name: Push commit
+on:
+  push:
+    branches:
+    - master
+jobs:
+  sync-pages-branch:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: repo-sync
+      uses: repo-sync/github-sync@v2
+      with:
+        source_repo: "https://github.com/googleanalytics/analytics-data-javascript-examples.git"
+        source_branch: "master"
+        destination_branch: "gh-pages"
+        github_token: ${{ secrets.PAT }}
+  update-pages-branch:
+    needs: sync-pages-branch
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout target branch
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+    - name: Replace Client ID
+      run: sed -i 's/YOUR-CLIENT-ID/${{ secrets.CLIENT_ID }}/g' samples/run_pivot_report/run_pivot_report.js
+    - name: Commit
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git commit -m "replace the Client ID variable"
+        git push --force
