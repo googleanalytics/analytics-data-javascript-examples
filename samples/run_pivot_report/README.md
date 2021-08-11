@@ -18,16 +18,14 @@ range, your pivot report will look like this:
 
 ![Example output](output_example.png)
 
+## Live demo
+
+Open the [live demo](https://googleanalytics.github.io/analytics-data-javascript-examples/samples/run_pivot_report/run_pivot_report.html)
+to try out the application.
+
 ## Running the demo
 
-1) Edit the `run_pivot_report.js` file and replace `propertyId` variable with
-   your [Google Analytics 4 property ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id)
-   before running the sample. For example:
-    ```
-    const propertyId = '1234567'; // YOUR GA4 PROPERTY ID
-    ```
-
-2) This demo application uses [OAuth2 flow](https://developers.google.com/identity/protocols/oauth2)
+1) This demo application uses [OAuth2 flow](https://developers.google.com/identity/protocols/oauth2)
    to access data in the Google Analytics 4 property [on behalf of an end user](https://cloud.google.com/docs/authentication/end-user)
    and requires OAuth2 credentials created in your [Google Cloud project](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
    
@@ -44,7 +42,7 @@ range, your pivot report will look like this:
     ```
     const clientId = '123456789-abcdef.apps.googleusercontent.com';
     ```
-3) The easiest way to run the demo application using your local machine
+2) The easiest way to run the demo application using your local machine
    is to use [Python3](https://www.python.org/downloads/) as a simple web
    server. From the current directory, run the following command:
    ```
@@ -55,7 +53,7 @@ range, your pivot report will look like this:
    current  directory. You may need to change the port number if port 8080 is
    already occupied. In this case, adjust other URLs in this guide accordingly.
    
-4) Open the following URL in your browser to run the demo application:
+3) Open the following URL in your browser to run the demo application:
    ```
     http://localhost:8080/run_pivot_report.html
    ```

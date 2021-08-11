@@ -14,12 +14,6 @@
 // [START analyticsdata_pivot_demo]
 // [START analyticsdata_pivot_demo_initialize]
 /**
- * TODO(developer): Replace this variable with your
- *   Google Analytics 4 property ID before running the sample.
- */
-let propertyId = 'YOUR-GA4-PROPERTY-ID';
-
-/**
  * TODO(developer): Replace this variable with a client ID for your web
  * application from the Google API Console:
  *
@@ -28,7 +22,7 @@ let propertyId = 'YOUR-GA4-PROPERTY-ID';
  * In your API Console project, add a JavaScript origin that corresponds
  * to the domain where you will be running the script (e.g. http://localhost:8080).
  */
-let clientId =  'YOUR-CLIENT-ID';
+const clientId =  'YOUR-CLIENT-ID';
 
 // The Google Analytics Data API v1 discovery document url.
 // See https://developers.google.com/analytics/devguides/reporting/data/v1/rest/
@@ -41,6 +35,7 @@ const scopes = 'https://www.googleapis.com/auth/analytics.readonly';
 
 const authorizeButton = document.getElementById('authorize-button');
 const signoutButton = document.getElementById('signout-button');
+const runQueryButton = document.getElementById('run-query-button');
 
 function handleClientLoad() {
   // Load the API client and auth2 library
@@ -62,6 +57,7 @@ function initClient() {
 
     authorizeButton.onclick = handleAuthClick;
     signoutButton.onclick = handleSignoutClick;
+    runQueryButton.onclick = handleRunQueryClick;
   }).catch((error) => {
     // Display the error on the page.
     const errorOutput = document.getElementById('error');
@@ -74,11 +70,11 @@ function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
     authorizeButton.style.display = 'none';
     signoutButton.style.display = 'block';
-    readUserInput();
-    makeApiCall();
+    runQueryButton.style.display = 'block';
   } else {
     authorizeButton.style.display = 'block';
     signoutButton.style.display = 'none';
+    runQueryButton.style.display = 'none';
   }
 }
 
@@ -89,16 +85,13 @@ function handleAuthClick(event) {
 function handleSignoutClick(event) {
   gapi.auth2.getAuthInstance().signOut();
 }
+
+function handleRunQueryClick(event) {
+  makeApiCall();
+}
 // [END analyticsdata_pivot_demo_initialize]
 
-// Get configuration values provided by a user in the UI.
-function readUserInput() {
-  clientId = document.getElementById('client-id').value;
-  propertyId = document.getElementById('property-id').value;
-}
-
 // [START analyticsdata_pivot_demo_make_api_call]
-
 // Load the API and make an API call.  Display the results on the screen.
 function makeApiCall() {
   // Make a call to the Google Analytics Data API v1. This call builds a pivot
@@ -109,6 +102,8 @@ function makeApiCall() {
   // See https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/properties/runPivotReport
   //   for more information on pivot report request structure.
   // [START analyticsdata_pivot_demo_make_api_call_request]
+  // Get configuration values provided by a user in the UI.
+  const propertyId = document.getElementById('property-id').value;
   const pivotReportQuery = {
     'property': 'properties/' + propertyId,
     'dateRanges': [
@@ -173,6 +168,11 @@ function makeApiCall() {
     // ----------------------------------------------------------------
     // Get a reference the result table element.
     const resultTable = document.getElementById('result');
+
+    // Clear the output.
+    while (resultTable.firstChild) {
+      resultTable.removeChild(resultTable.firstChild);
+    }
 
     // Get a reference the header response object for each pivot.
     const countryPivotDimensionHeaders = response.result.pivotHeaders[0].pivotDimensionHeaders;
@@ -310,6 +310,11 @@ function makeApiCall() {
 
   // Display the report query on the page for debug purposes.
   const debugOutput = document.getElementById('query');
+  // Clear the output.
+  while (debugOutput.firstChild) {
+    debugOutput.removeChild(debugOutput.firstChild);
+  }
+
   const textNode = document.createTextNode('Pivot report query:\n' +
       JSON.stringify(pivotReportQuery, null, 2));
   debugOutput.appendChild(textNode);
