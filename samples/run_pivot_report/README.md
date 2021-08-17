@@ -23,7 +23,7 @@ range, your pivot report will look like this:
 Open the [live demo](https://googleanalytics.github.io/analytics-data-javascript-examples/samples/run_pivot_report/run_pivot_report.html)
 to try out the application.
 
-## Running the demo
+## Running the demo locally
 
 1) This demo application uses [OAuth2 flow](https://developers.google.com/identity/protocols/oauth2)
    to access data in the Google Analytics 4 property [on behalf of an end user](https://cloud.google.com/docs/authentication/end-user)
