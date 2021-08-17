@@ -22,7 +22,7 @@
  * In your API Console project, add a JavaScript origin that corresponds
  * to the domain where you will be running the script (e.g. http://localhost:8080).
  */
-const clientId =  'YOUR-CLIENT-ID';
+const clientId =  '793177639245-olst43lspv93vkoql0b9l26hmpf9kfmv.apps.googleusercontent.com';
 
 // The Google Analytics Data API v1 discovery document url.
 // See https://developers.google.com/analytics/devguides/reporting/data/v1/rest/
